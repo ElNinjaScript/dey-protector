@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "**/*.zip"
+  workflow_dispatch:
 
 jobs:
   unzip:
@@ -15,7 +16,7 @@ jobs:
 
       - name: Find ZIP
         run: |
-          ZIP_FILE=$(ls *.zip | head -n 1)
+          ZIP_FILE=$(find . -maxdepth 2 -name "*.zip" | head -n 1)
           echo "ZIP file found: $ZIP_FILE"
           unzip -o "$ZIP_FILE" -d extracted
           ls extracted
@@ -26,7 +27,8 @@ jobs:
           rm -rf extracted
 
       - name: Remove zip file
-        run: rm -f *.zip
+        run: |
+          rm -f $(find . -maxdepth 2 -name "*.zip")
 
       - name: Commit changes
         run: |
